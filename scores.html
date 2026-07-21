@@ -1,101 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Scores · Minimax Arcade</title>
-<link rel="stylesheet" href="style.css">
-<style>
-  .big-scores {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    margin-bottom: 50px;
-  }
-  .big-scores .panel { text-align: center; padding: 26px 0; }
-  .big-scores .num { font-family: 'Space Grotesk', sans-serif; font-size: 44px; }
-  .big-scores .lbl { font-size: 11px; letter-spacing: 2px; color: var(--muted); margin-top: 8px; }
-  .cyan-text { color: var(--cyan); }
-  .magenta-text { color: var(--magenta); }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scores — Minimax Arcade</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    :root {
+      --bg-dark: #070913;
+      --card-bg: rgba(18, 24, 48, 0.75);
+      --neon-cyan: #00f0ff;
+      --neon-magenta: #ff007f;
+      --border-glow: rgba(0, 240, 255, 0.25);
+      --text-bright: #ffffff;
+      --text-dim: #94a3b8;
+    }
 
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th, td { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--line); }
-  th { color: var(--muted); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; font-weight: 400; }
-  .result-win { color: var(--cyan); }
-  .result-loss { color: var(--magenta); }
-  .result-draw { color: var(--muted); }
-  .empty { color: var(--muted); text-align: center; padding: 40px 0; }
-</style>
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-bright);
+      min-height: 100vh;
+    }
+
+    .scores-container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .scores-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin: 30px 0 50px;
+    }
+
+    .score-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-glow);
+      border-radius: 14px;
+      padding: 30px 20px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .score-card .val {
+      font-size: 48px;
+      font-weight: 800;
+      color: var(--neon-cyan);
+      margin-bottom: 8px;
+    }
+
+    .score-card .label {
+      font-size: 13px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .history-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-glow);
+      border-radius: 14px;
+      padding: 24px;
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-dim);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .history-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 14px;
+    }
+
+    .btn-reset {
+      margin-top: 24px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: var(--text-bright);
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+    .btn-reset:hover {
+      background: rgba(255, 0, 127, 0.2);
+      border-color: var(--neon-magenta);
+    }
+  </style>
 </head>
 <body>
 
-<nav class="nav">
-  <div class="brand">MINIMAX<span>ARCADE</span></div>
-  <div class="links">
-    <a href="index.html">Home</a>
-    <a href="login.html">Login</a>
-    <a href="game.html">Play</a>
-    <a href="scores.html" class="active">Scores</a>
+  <!-- Top Navigation -->
+  <header class="nav">
+    <div class="brand">MINIMAX<span>ARCADE</span></div>
+    <nav class="links">
+      <a href="index.html">Home</a>
+      <a href="login.html">Login</a>
+      <a href="game.html">Play</a>
+      <a href="scores.html" class="active">Scores</a>
+    </nav>
+  </header>
+
+  <div class="scores-container">
+    <div style="font-size: 13px; color: var(--neon-cyan); letter-spacing: 1.5px; text-transform: uppercase;">// scoreboard</div>
+    <h1 style="font-size: 36px; margin: 8px 0 0;">Track record vs. the machine</h1>
+
+    <!-- Top Score Cards -->
+    <div class="scores-grid">
+      <div class="score-card">
+        <div class="val" id="playerWinsVal">0</div>
+        <div class="label">Player Wins</div>
+      </div>
+      <div class="score-card">
+        <div class="val" id="aiWinsVal" style="color: var(--neon-magenta);">0</div>
+        <div class="label">AI Wins</div>
+      </div>
+      <div class="score-card">
+        <div class="val" id="drawsVal" style="color: #ffe600;">0</div>
+        <div class="label">Draws</div>
+      </div>
+    </div>
+
+    <!-- Match History -->
+    <div style="font-size: 13px; color: var(--neon-cyan); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px;">// match history</div>
+    <div class="history-card">
+      <div class="history-header">
+        <span style="flex: 1;">PLAYER</span>
+        <span style="flex: 1; text-align: center;">RESULT</span>
+        <span style="flex: 1; text-align: right;">TIME</span>
+      </div>
+      <div id="historyList">
+        <p style="text-align:center; color:var(--text-dim); padding: 20px;">No matches played yet. <a href="game.html" style="color:var(--neon-cyan);">Play your first round →</a></p>
+      </div>
+    </div>
+
+    <button class="btn-reset" onclick="resetScores()">Reset All Scores</button>
   </div>
-  <div class="player" id="navPlayer"></div>
-</nav>
 
-<div class="page">
-  <div class="eyebrow">// scoreboard</div>
-  <h1 style="margin-bottom:30px;">Track record vs. the machine</h1>
+  <script>
+    function loadScores() {
+      const stats = JSON.parse(localStorage.getItem('minimax_stats') || '{"ai":0, "player":0, "draw":0}');
+      const history = JSON.parse(localStorage.getItem('minimax_match_history') || '[]');
 
-  <div class="big-scores">
-    <div class="panel"><div class="num cyan-text" id="totalYou">0</div><div class="lbl">Player Wins</div></div>
-    <div class="panel"><div class="num magenta-text" id="totalAI">0</div><div class="lbl">AI Wins</div></div>
-    <div class="panel"><div class="num" id="totalDraw">0</div><div class="lbl">Draws</div></div>
-  </div>
+      // Update Counts
+      document.getElementById('playerWinsVal').textContent = stats.player;
+      document.getElementById('aiWinsVal').textContent = stats.ai;
+      document.getElementById('drawsVal').textContent = stats.draw;
 
-  <div class="eyebrow">// match history</div>
-  <div class="panel">
-    <table>
-      <thead>
-        <tr><th>Player</th><th>Result</th><th>Time</th></tr>
-      </thead>
-      <tbody id="historyBody"></tbody>
-    </table>
-    <div class="empty" id="emptyMsg" style="display:none;">No matches played yet. <a href="game.html" style="color:var(--cyan)">Play your first round →</a></div>
-  </div>
+      // Update Table History
+      const listEl = document.getElementById('historyList');
+      if (history.length === 0) {
+        listEl.innerHTML = '<p style="text-align:center; color:var(--text-dim); padding: 20px;">No matches played yet. <a href="game.html" style="color:var(--neon-cyan);">Play your first round →</a></p>';
+      } else {
+        listEl.innerHTML = history.map(item => `
+          <div class="history-row">
+            <span style="flex: 1;">${item.player}</span>
+            <span style="flex: 1; text-align: center; color: var(--neon-cyan); font-weight: bold;">${item.result}</span>
+            <span style="flex: 1; text-align: right; color: var(--text-dim);">${item.time}</span>
+          </div>
+        `).join('');
+      }
+    }
 
-  <div style="margin-top:24px;">
-    <button class="btn ghost" onclick="clearAll()">Reset All Scores</button>
-  </div>
-</div>
+    function resetScores() {
+      localStorage.removeItem('minimax_stats');
+      localStorage.removeItem('minimax_match_history');
+      loadScores();
+    }
 
-<script src="script.js"></script>
-<script>
-renderNavPlayer();
-
-function render() {
-  const s = getScores();
-  document.getElementById('totalYou').textContent = s.you;
-  document.getElementById('totalAI').textContent = s.ai;
-  document.getElementById('totalDraw').textContent = s.draw;
-
-  const h = getHistory();
-  const body = document.getElementById('historyBody');
-  body.innerHTML = '';
-  document.getElementById('emptyMsg').style.display = h.length ? 'none' : 'block';
-
-  h.forEach(entry => {
-    const tr = document.createElement('tr');
-    const label = entry.result === 'win' ? 'You won' : entry.result === 'loss' ? 'AI won' : 'Draw';
-    tr.innerHTML = `<td>${entry.player}</td><td class="result-${entry.result}">${label}</td><td class="muted">${entry.time}</td>`;
-    body.appendChild(tr);
-  });
-}
-
-function clearAll() {
-  if (confirm('Reset all scores and match history?')) {
-    resetAll();
-    render();
-  }
-}
-
-render();
-</script>
+    document.addEventListener('DOMContentLoaded', loadScores);
+  </script>
 </body>
 </html>
