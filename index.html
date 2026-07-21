@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Minimax Arcade</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .hero {
+    padding-top: 40px;
+    text-align: left;
+  }
+  .hero h1 {
+    font-size: 52px;
+    line-height: 1.05;
+    letter-spacing: -1px;
+    margin-bottom: 18px;
+  }
+  .hero h1 .cyan { color: var(--cyan); }
+  .hero h1 .magenta { color: var(--magenta); }
+  .hero p.lead {
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 480px;
+    line-height: 1.6;
+    margin-bottom: 32px;
+  }
+  .cta-row { display: flex; gap: 16px; margin-bottom: 70px; }
+
+  /* signature: live mini board that plays itself, decorative */
+  .demo-wrap {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .demo-board {
+    display: grid;
+    grid-template-columns: repeat(3, 46px);
+    grid-template-rows: repeat(3, 46px);
+    gap: 3px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+  .demo-board .c {
+    background: var(--panel-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 20px;
+    color: var(--cyan);
+  }
+  .demo-caption { font-size: 11px; color: var(--muted); letter-spacing: 1px; margin-top: 10px; }
+
+  .how {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 24px;
+  }
+  .how .step {
+    border-left: 2px solid var(--cyan);
+    padding-left: 16px;
+  }
+  .how .step .n { color: var(--magenta); font-size: 12px; letter-spacing: 2px; }
+  .how .step h3 { font-size: 16px; margin: 6px 0 8px; }
+  .how .step p { color: var(--muted); font-size: 13px; line-height: 1.5; }
+
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 34px; }
+    .how { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand">MINIMAX<span>ARCADE</span></div>
+  <div class="links">
+    <a href="index.html" class="active">Home</a>
+    <a href="login.html">Login</a>
+    <a href="game.html">Play</a>
+    <a href="scores.html">Scores</a>
+  </div>
+  <div class="player" id="navPlayer"></div>
+</nav>
+
+<div class="page">
+  <section class="hero">
+    <div class="eyebrow">// unbeatable by design</div>
+    <h1>An AI that never<br>loses <span class="cyan">on purpose</span>,<br>never <span class="magenta">by luck</span>.</h1>
+    <p class="lead">
+      Every move the AI makes is computed by exploring the full game tree —
+      the Minimax algorithm — scoring every possible ending before it plays.
+      No shortcuts, no randomness, no mercy.
+    </p>
+    <div class="cta-row">
+      <a href="login.html" class="btn">Start Playing →</a>
+      <a href="scores.html" class="btn ghost">View Scoreboard</a>
+    </div>
+  </section>
+
+  <section class="demo-wrap">
+    <div>
+      <div class="demo-board" id="demoBoard"></div>
+      <div class="demo-caption">live self-play preview</div>
+    </div>
+    <div style="max-width:380px;">
+      <div class="eyebrow">// how it thinks</div>
+      <div class="how">
+        <div class="step">
+          <div class="n">01</div>
+          <h3>Explore</h3>
+          <p>Simulates every remaining move on the board, recursively, to the end of the game.</p>
+        </div>
+      </div>
+      <div class="how" style="margin-top:14px;">
+        <div class="step">
+          <div class="n">02</div>
+          <h3>Score</h3>
+          <p>Wins, losses, and draws are scored +1 / −1 / 0 from the AI's perspective.</p>
+        </div>
+      </div>
+      <div class="how" style="margin-top:14px;">
+        <div class="step">
+          <div class="n">03</div>
+          <h3>Choose</h3>
+          <p>Picks the move that guarantees the best worst-case outcome. Every time.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer class="foot">MINIMAX ARCADE · built on the minimax game-tree search algorithm</footer>
+
+<script src="script.js"></script>
+<script>
+renderNavPlayer();
+
+/* Decorative self-playing demo board on loop */
+const demo = document.getElementById('demoBoard');
+let board, turn;
+function initDemo() {
+  board = Array(9).fill(null);
+  turn = 'X';
+  drawDemo();
+  setTimeout(stepDemo, 500);
+}
+function drawDemo() {
+  demo.innerHTML = '';
+  board.forEach(v => {
+    const c = document.createElement('div');
+    c.className = 'c';
+    c.textContent = v || '';
+    demo.appendChild(c);
+  });
+}
+function stepDemo() {
+  const w = getWinner(board);
+  if (w || board.every(c => c)) { setTimeout(initDemo, 1400); return; }
+  let move;
+  if (turn === 'X') move = bestMove(board);
+  else {
+    const open = board.map((v,i)=>v?null:i).filter(v=>v!==null);
+    move = open[Math.floor(Math.random()*open.length)];
+  }
+  board[move] = turn;
+  turn = turn === 'X' ? 'O' : 'X';
+  drawDemo();
+  if (getWinner(board) || board.every(c=>c)) { setTimeout(initDemo, 1400); return; }
+  setTimeout(stepDemo, 500);
+}
+initDemo();
+</script>
+</body>
+</html>

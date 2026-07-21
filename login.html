@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Login · Minimax Arcade</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .wrap {
+    max-width: 380px;
+    margin: 70px auto 0;
+  }
+  .wrap .eyebrow { text-align: center; }
+  .wrap h1 {
+    font-size: 26px;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  .field { margin-bottom: 20px; }
+  .field label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .field input {
+    width: 100%;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 15px;
+    padding: 12px 14px;
+    outline: none;
+  }
+  .field input:focus { border-color: var(--cyan); }
+  .wrap .btn { width: 100%; margin-top: 6px; }
+  .note {
+    margin-top: 18px;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand">MINIMAX<span>ARCADE</span></div>
+  <div class="links">
+    <a href="index.html">Home</a>
+    <a href="login.html" class="active">Login</a>
+    <a href="game.html">Play</a>
+    <a href="scores.html">Scores</a>
+  </div>
+  <div class="player" id="navPlayer"></div>
+</nav>
+
+<div class="page">
+  <div class="wrap panel">
+    <div class="eyebrow">// player badge</div>
+    <h1>Who's challenging<br>the machine?</h1>
+    <div class="field">
+      <label>Player name</label>
+      <input type="text" id="nameInput" placeholder="e.g. Siri" maxlength="16" autofocus>
+    </div>
+    <button class="btn" onclick="handleLogin()">Enter Arcade →</button>
+    <div class="note">No password needed — this just tags your scoreboard entries locally in this browser.</div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+renderNavPlayer();
+const existing = getPlayer();
+if (existing) document.getElementById('nameInput').value = existing;
+
+function handleLogin() {
+  const name = document.getElementById('nameInput').value.trim();
+  if (!name) { document.getElementById('nameInput').focus(); return; }
+  setPlayer(name);
+  location.href = 'game.html';
+}
+document.getElementById('nameInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') handleLogin();
+});
+</script>
+</body>
+</html>
