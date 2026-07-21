@@ -66,6 +66,71 @@
   .how .step h3 { font-size: 16px; margin: 6px 0 8px; }
   .how .step p { color: var(--muted); font-size: 13px; line-height: 1.5; }
 
+  /* --- MINIMAX TREE STRUCTURE STYLES --- */
+  .tree-section {
+    margin-top: 60px;
+    padding-top: 30px;
+    border-top: 1px solid var(--line);
+  }
+  .tree-wrap {
+    margin-top: 24px;
+    overflow-x: auto;
+    padding-bottom: 20px;
+  }
+  .tree-node {
+    border: 1px solid var(--line);
+    background: var(--panel-2);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family: 'Space Grotesk', monospace;
+    font-size: 12px;
+    display: inline-block;
+    text-align: center;
+  }
+  .tree-node.max { border-color: var(--cyan); color: var(--cyan); }
+  .tree-node.min { border-color: var(--magenta); color: var(--magenta); }
+  .tree-node.leaf { border-color: var(--muted); color: var(--muted); }
+  .tree-node.chosen {
+    background: var(--cyan);
+    color: #000;
+    font-weight: bold;
+    border-color: var(--cyan);
+  }
+
+  /* Tree hierarchy styling using unordered lists */
+  .tree-diagram ul {
+    padding-top: 20px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    list-style-type: none;
+    margin: 0;
+  }
+  .tree-diagram li {
+    text-align: center;
+    position: relative;
+    padding: 20px 10px 0 10px;
+  }
+  .tree-diagram li::before, .tree-diagram li::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 50%;
+    border-top: 1px solid var(--line);
+    width: 50%;
+    height: 20px;
+  }
+  .tree-diagram li::after {
+    right: auto;
+    left: 50%;
+    border-left: 1px solid var(--line);
+  }
+  .tree-diagram li:only-child::after, .tree-diagram li:only-child::before { display: none; }
+  .tree-diagram li:only-child { padding-top: 0; }
+  .tree-diagram li:first-child::before, .tree-diagram li:last-child::after { border: none; }
+  .tree-diagram li:last-child::before { border-right: 1px solid var(--line); border-radius: 0 4px 0 0; }
+  .tree-diagram li:first-child::after { border-radius: 4px 0 0 0; }
+
   @media (max-width: 640px) {
     .hero h1 { font-size: 34px; }
     .how { grid-template-columns: 1fr; }
@@ -127,6 +192,56 @@
           <h3>Choose</h3>
           <p>Picks the move that guarantees the best worst-case outcome. Every time.</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEW SECTION: VISUAL GAME TREE STRUCTURE -->
+  <section class="tree-section">
+    <div class="eyebrow">// decision structure</div>
+    <h2 style="font-size: 24px; margin-top: 6px;">Minimax Game Tree Visualization</h2>
+    
+    <div class="tree-wrap">
+      <div class="tree-diagram">
+        <ul>
+          <li>
+            <div class="tree-node max">
+              Root (MAX)<br>
+              <strong>Score: +1</strong>
+            </div>
+            <ul>
+              <li>
+                <div class="tree-node min">
+                  Move A (MIN)<br>
+                  <span>Score: 0</span>
+                </div>
+                <ul>
+                  <li><div class="tree-node leaf">Leaf (+1)</div></li>
+                  <li><div class="tree-node leaf">Leaf (0)</div></li>
+                </ul>
+              </li>
+              <li>
+                <div class="tree-node min">
+                  Move B (MIN)<br>
+                  <span>Score: -1</span>
+                </div>
+                <ul>
+                  <li><div class="tree-node leaf">Leaf (-1)</div></li>
+                  <li><div class="tree-node leaf">Leaf (+1)</div></li>
+                </ul>
+              </li>
+              <li>
+                <div class="tree-node min chosen">
+                  Move C (MIN)<br>
+                  <strong>Score: +1</strong>
+                </div>
+                <ul>
+                  <li><div class="tree-node leaf chosen">Leaf (+1)</div></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
       </div>
     </div>
   </section>
