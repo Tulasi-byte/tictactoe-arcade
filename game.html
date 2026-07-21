@@ -519,10 +519,36 @@
         const e = document.getElementById('edge-'+path[i]+'-'+path[i+1]);
         if(e) e.classList.add('chosen');
       }
-      captionEl.innerHTML = `🏆 <b>Evaluation Complete!</b> Optimal path highlighted in gold. Root Value = <b>${nodes.root.value}</b>.`;
+
+      const finalScore = nodes.root.value;
+      captionEl.innerHTML = `🏆 <b>Evaluation Complete!</b> Optimal path highlighted in gold. Root Value = <b>${finalScore}</b>.`;
+
+      // Save the match score to localStorage so scores.html can display it
+      saveScoreToHistory(finalScore);
+
       playing = false;
       playBtn.textContent = '▶ Play Engine';
       clearInterval(playTimer);
+    }
+
+    function saveScoreToHistory(score) {
+      let resultText = score > 0 ? "AI Victory" : (score < 0 ? "Player Victory" : "Draw Match");
+      let history = JSON.parse(localStorage.getItem('minimax_match_history') || '[]');
+      
+      history.unshift({
+        player: "tulasi",
+        result: `${resultText} (Score: ${score})`,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      });
+
+      localStorage.setItem('minimax_match_history', JSON.stringify(history));
+
+      let stats = JSON.parse(localStorage.getItem('minimax_stats') || '{"ai":0, "player":0, "draw":0}');
+      if (score > 0) stats.ai++;
+      else if (score < 0) stats.player++;
+      else stats.draw++;
+      
+      localStorage.setItem('minimax_stats', JSON.stringify(stats));
     }
 
     function resetAll() {
