@@ -1,78 +1,201 @@
-/* General Layout & Background */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap');
+
+/* --- COLOR VARIABLES --- */
+:root {
+  --bg: #0f0f1a;
+  --panel: #181828;
+  --panel-2: #1e1e32;
+  --line: rgba(255, 255, 255, 0.12);
+  --cyan: #00f2fe;
+  --magenta: #ff0844;
+  --text: #ffffff;
+  --muted: #a0a0c0;
+}
+
+/* --- GENERAL RESET & LAYOUT --- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #1e1e2f 0%, #0f0f1a 100%);
-    color: #ffffff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--bg);
+  background: linear-gradient(135deg, #181828 0%, #0f0f1a 100%);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.6;
 }
 
-/* Card Container */
-.container {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    padding: 30px;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    text-align: center;
+/* --- NAVIGATION BAR --- */
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(15, 15, 26, 0.8);
+  backdrop-filter: blur(10px);
 }
 
-/* Game Board Grid */
-.board {
-    display: grid;
-    grid-template-columns: repeat(3, 100px);
-    grid-template-rows: repeat(3, 100px);
-    gap: 12px;
-    margin: 20px auto;
+.brand {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 2px;
+  color: var(--text);
 }
 
-/* Grid Cells */
-.cell {
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.5rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: transform 0.2s ease, background 0.2s ease;
+.brand span {
+  color: var(--cyan);
 }
 
-.cell:hover {
-    background: rgba(255, 255, 255, 0.18);
-    transform: translateY(-3px);
+.links {
+  display: flex;
+  gap: 24px;
 }
 
-/* Player Styling */
-.cell.x {
-    color: #00f2fe; /* Glowing Cyan for X */
-    text-shadow: 0 0 10px rgba(0, 242, 254, 0.6);
+.links a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: color 0.2s ease;
 }
 
-.cell.o {
-    color: #ff0844; /* Glowing Pink/Red for O */
-    text-shadow: 0 0 10px rgba(255, 8, 68, 0.6);
+.links a:hover, .links a.active {
+  color: var(--cyan);
 }
 
-/* Buttons */
-button {
-    background: linear-gradient(45deg, #00f2fe, #4facfe);
-    border: none;
-    color: #fff;
-    padding: 12px 24px;
-    font-size: 1rem;
-    font-weight: 600;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: opacity 0.2s ease, transform 0.2s ease;
+/* --- MAIN PAGE CONTAINER --- */
+.page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 20px 80px;
+  flex: 1;
+  width: 100%;
 }
 
-button:hover {
-    opacity: 0.9;
-    transform: scale(1.05);
+.eyebrow {
+  font-family: 'Space Grotesk', monospace;
+  color: var(--cyan);
+  font-size: 13px;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
 }
+
+/* --- BUTTONS --- */
+.btn {
+  display: inline-block;
+  background: linear-gradient(45deg, var(--cyan), #4facfe);
+  border: none;
+  color: #000;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 8px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.btn:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.btn.ghost {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--line);
+}
+
+.btn.ghost:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+/* --- FOOTER --- */
+.foot {
+  text-align: center;
+  padding: 24px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+/* --- MINIMAX TREE STRUCTURE GRAPHICS --- */
+.tree-section {
+  margin-top: 60px;
+  padding-top: 30px;
+  border-top: 1px solid var(--line);
+}
+
+.tree-wrap {
+  margin-top: 24px;
+  overflow-x: auto;
+  padding-bottom: 20px;
+}
+
+.tree-node {
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-family: 'Space Grotesk', monospace;
+  font-size: 12px;
+  display: inline-block;
+  text-align: center;
+  min-width: 90px;
+}
+
+.tree-node.max { border-color: var(--cyan); color: var(--cyan); }
+.tree-node.min { border-color: var(--magenta); color: var(--magenta); }
+.tree-node.leaf { border-color: var(--muted); color: var(--muted); }
+.tree-node.chosen {
+  background: var(--cyan);
+  color: #000;
+  font-weight: bold;
+  border-color: var(--cyan);
+}
+
+/* Connecting tree branches */
+.tree-diagram ul {
+  padding-top: 20px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  list-style-type: none;
+}
+
+.tree-diagram li {
+  text-align: center;
+  position: relative;
+  padding: 20px 10px 0 10px;
+}
+
+.tree-diagram li::before, .tree-diagram li::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 50%;
+  border-top: 1px solid var(--line);
+  width: 50%;
+  height: 20px;
+}
+
+.tree-diagram li::after {
+  right: auto;
+  left: 50%;
+  border-left: 1px solid var(--line);
+}
+
+.tree-diagram li:only-child::after, .tree-diagram li:only-child::before { display: none; }
+.tree-diagram li:only-child { padding-top: 0; }
+.tree-diagram li:first-child::before, .tree-diagram li:last-child::after { border: none; }
+.tree-diagram li:last-child::before { border-right: 1px solid var(--line); border-radius: 0 4px 0 0; }
+.tree-diagram li:first-child::after { border-radius: 4px 0 0 0; }
